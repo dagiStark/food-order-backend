@@ -30,3 +30,13 @@ export interface IOrder extends Document {
   readyTime: number;
 }
 
+export interface IFood extends Document {
+  vendorId: string;
+  name: string;
+  description: string;
+  category: string;
+  foodType: string;
+  price: number;
+  rating: number;
+  image: [string];
+}
