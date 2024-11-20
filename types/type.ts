@@ -80,3 +80,13 @@ export interface IDeliveryUser extends Document {
 
 
 
+export interface ITransaction extends Document {
+  customer: string;
+  vendorId: string;
+  orderId: string;
+  orderValue: number;
+  offerUsed: string;
+  status: string;
+  paymentMode: string;
+  PaymentResponse: string;
+}
