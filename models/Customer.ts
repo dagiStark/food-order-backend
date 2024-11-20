@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
+import { ICustomer } from "../types/type";
 
 const CustomerSchema = new Schema(
   {
@@ -41,4 +42,4 @@ const CustomerSchema = new Schema(
   }
 );
 
-export const Customer = mongoose.model("customer", CustomerSchema);
+export const Customer = mongoose.model<ICustomer>("customer", CustomerSchema);
