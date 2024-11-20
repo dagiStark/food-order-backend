@@ -6,7 +6,7 @@ import {
   CustomerRoute,
   DeliveryRoute,
   ShoppingRoute,
-  VandorRoute,
+  VendorRoute,
 } from "../routes";
 
 export const createEndpoint = (app: Application) => {
@@ -20,7 +20,7 @@ export const createEndpoint = (app: Application) => {
   app.use("/customer", CustomerRoute);
   app.use("/delivery", DeliveryRoute);
   app.use("/shopping", ShoppingRoute);
-  app.use("/vandor", VandorRoute);
+  app.use("/vendor", VendorRoute);
 
   app.use((req: Request, res: Response, next: NextFunction) => {
     res.status(404).send("Not Found");
