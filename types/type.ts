@@ -90,3 +90,22 @@ export interface ITransaction extends Document {
   paymentMode: string;
   PaymentResponse: string;
 }
+
+
+export interface IVendor extends Document {
+  name: string;
+  ownerName: string;
+  foodType: string[];
+  pinCode: string;
+  address: string;
+  phone: string;
+  email: string;
+  password: string;
+  salt: string;
+  serviceAvailable: boolean;
+  coverImages: string[];
+  rating: number;
+  foods: mongoose.Types.ObjectId[];
+  lat: number;
+  lng: number;
+}
