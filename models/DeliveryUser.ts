@@ -10,7 +10,7 @@ const DeliveryUserSchema: Schema = new Schema(
     lastName: { type: String },
     address: { type: String },
     phone: { type: String, required: true },
-    pincode: { type: String },
+    pinCode: { type: String },
     verified: { type: Boolean },
     otp: { type: Number },
     otp_expiry: { type: Date },

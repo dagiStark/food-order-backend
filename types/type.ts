@@ -69,7 +69,7 @@ export interface IDeliveryUser extends Document {
   lastName: string;
   address: string;
   phone: string;
-  pincode: string;
+  pinCode: string;
   verified: boolean;
   otp: string;
   otp_expiry: Date;
