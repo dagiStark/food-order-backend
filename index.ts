@@ -5,12 +5,14 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import connectDB from "./services/database";
+import { createEndpoint } from "./services/endpoint";
 
 const app = express();
 
 app.use(bodyParser.json());
 app.use(cors());
 
+createEndpoint(app);
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
