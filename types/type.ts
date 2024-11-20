@@ -58,3 +58,25 @@ export interface IOffer extends Document {
   createdAt?: Date;
   updatedAt?: Date;
 }
+
+
+
+export interface IDeliveryUser extends Document {
+  email: string;
+  password: string;
+  salt: string;
+  firstName: string;
+  lastName: string;
+  address: string;
+  phone: string;
+  pincode: string;
+  verified: boolean;
+  otp: string;
+  otp_expiry: Date;
+  lat: number;
+  lng: number;
+  isAvailable: boolean;
+}
+
+
+
