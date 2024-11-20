@@ -1,4 +1,4 @@
-import { Document, Schema, Model } from "mongoose";
+import mongoose, { Document, Schema, Model } from "mongoose";
 
 export interface ICustomer extends Document {
   email: string;
@@ -39,4 +39,22 @@ export interface IFood extends Document {
   price: number;
   rating: number;
   image: [string];
+}
+
+export interface IOffer extends Document {
+  offerType: string;
+  vendors: mongoose.Types.ObjectId[];
+  title: string;
+  description?: string;
+  minValue: number;
+  startValidity?: Date;
+  endValidity?: Date;
+  promoCode: string;
+  promoType: string;
+  bank?: string[];
+  bins?: number[];
+  pinCode: string;
+  isActive?: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
