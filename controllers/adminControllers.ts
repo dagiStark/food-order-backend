@@ -97,3 +97,14 @@ export const getVendorById = async (req: Request, res: Response) => {
   }
 };
 
+export const getTransactions = async (req: Request, res: Response) => {
+  try {
+    const transactions = await Transaction.find();
+    if (!transactions)
+      return res.status(200).json({ message: "No transactions found" });
+    res.status(200).json(transactions);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching transactions" });
+  }
+};
+
