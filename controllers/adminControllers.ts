@@ -68,7 +68,7 @@ export const getVendors = async (req: Request, res: Response) => {
   try {
     const vendors = await Vendor.find();
     if (!vendors) return res.status(200).json({ message: "No vendors found" });
-    res.status(200).json(vendors);
+    res.status(200).json({ data: vendors });
   } catch (error) {
     res.status(500).json({ message: "Error fetching vendors" });
   }
@@ -102,7 +102,7 @@ export const getTransactions = async (req: Request, res: Response) => {
     const transactions = await Transaction.find();
     if (!transactions)
       return res.status(200).json({ message: "No transactions found" });
-    res.status(200).json(transactions);
+    res.status(200).json({ data: transactions });
   } catch (error) {
     res.status(500).json({ message: "Error fetching transactions" });
   }
@@ -139,8 +139,22 @@ export const verifyDeliveryUser = async (req: Request, res: Response) => {
 
     profile.verified = status;
     const result = await profile.save();
-    res.status(200).json(result);
+    res.status(200).json({ data: result });
   } catch (error) {
     res.status(500).json({ message: "Error while verifying user" });
   }
 };
+
+export const getDeliveryUsers = async (req: Request, res: Response) => {
+  try {
+    const deliveryUsers = await DeliveryUser.find({});
+    if (deliveryUsers) {
+      res.status(200).json({ data: deliveryUsers });
+    } else {
+      res.status(404).json({ message: "No delivery users found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Error while fetching delivery users" });
+  }
+};
+
