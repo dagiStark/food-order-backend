@@ -131,3 +131,16 @@ export const getTransactionById = async (req: Request, res: Response) => {
   }
 };
 
+export const verifyDeliveryUser = async (req: Request, res: Response) => {
+  const { _id, status } = req.body;
+  try {
+    const profile = await DeliveryUser.findById(_id);
+    if (!profile) return res.status(404).json({ message: "No user found" });
+
+    profile.verified = status;
+    const result = await profile.save();
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: "Error while verifying user" });
+  }
+};
