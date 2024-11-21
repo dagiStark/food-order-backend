@@ -108,3 +108,26 @@ export const getTransactions = async (req: Request, res: Response) => {
   }
 };
 
+export const getTransactionById = async (req: Request, res: Response) => {
+  try {
+    const transactionId = req.params.id;
+    const transaction = await Transaction.findById(transactionId);
+
+    if (!transaction) {
+      return res.status(404).json({ message: "Transaction not found" });
+    }
+
+    res.status(200).json({ data: transaction });
+  } catch (error: any) {
+    console.error("Error fetching transaction:", error.message);
+
+    if (error.name === "CastError") {
+      return res.status(400).json({ message: "Invalid transaction ID format" });
+    }
+
+    res
+      .status(500)
+      .json({ message: "An error occurred while retrieving the transaction" });
+  }
+};
+
