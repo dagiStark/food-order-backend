@@ -74,3 +74,26 @@ export const getVendors = async (req: Request, res: Response) => {
   }
 };
 
+export const getVendorById = async (req: Request, res: Response) => {
+  try {
+    const vendorId = req.params.id;
+    const vendor = await Vendor.findById(vendorId);
+
+    if (!vendor) {
+      return res.status(404).json({ message: "Vendor not found" });
+    }
+
+    res.status(200).json({ data: vendor });
+  } catch (error: any) {
+    console.error("Error fetching vendor:", error.message);
+
+    if (error.name === "CastError") {
+      return res.status(400).json({ message: "Invalid vendor ID format" });
+    }
+
+    res
+      .status(500)
+      .json({ message: "An error occurred while retrieving the vendor" });
+  }
+};
+
