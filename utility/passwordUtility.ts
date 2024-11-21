@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
+import { AuthPayload } from "../dto";
 
 export const generateSalt = () => {
   return bcrypt.genSaltSync(10);
@@ -32,7 +33,7 @@ export const validateSignature = async (req: Request, res: Response) => {
   if(signature){
     const token = signature.split(" ")[1]
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as any
+      const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as AuthPayload
       req.user = decoded
       return true
     } catch (error) {
