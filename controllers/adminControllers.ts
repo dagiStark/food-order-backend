@@ -64,3 +64,13 @@ export const CreateVendor = async (
   }
 };
 
+export const getVendors = async (req: Request, res: Response) => {
+  try {
+    const vendors = await Vendor.find();
+    if (!vendors) return res.status(200).json({ message: "No vendors found" });
+    res.status(200).json(vendors);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching vendors" });
+  }
+};
+
