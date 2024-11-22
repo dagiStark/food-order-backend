@@ -90,3 +90,48 @@ export const customerLogin = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error while logging in" });
   }
 };
+
+export const customerVerify = async (req: Request, res: Response) => {
+  try {
+    const { otp } = req.body;
+
+    if (!otp || isNaN(otp)) {
+      return res.status(400).json({ message: "Invalid OTP format" });
+    }
+
+    const customer = req.user;
+
+    if (!customer) {
+      return res.status(400).json({ message: "Invalid request" });
+    }
+
+    const profile = await Customer.findById(customer._id);
+
+    if (!profile) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (
+      parseInt(profile.otp) === parseInt(otp) &&
+      new Date(profile.otp_expiry) >= new Date()
+    ) {
+      profile.verified = true;
+
+      const result = await profile.save();
+
+      const signature = generateSignature({
+        _id: result._id,
+        email: result.email,
+        verified: result.verified,
+      });
+
+      return res.status(200).json({ data: result, signature });
+    }
+    return res.status(400).json({ message: "Invalid OTP" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+
