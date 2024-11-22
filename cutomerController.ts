@@ -64,3 +64,29 @@ export const customerSignup = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error while creating user" });
   }
 };
+
+export const customerLogin = async (req: Request, res: Response) => {
+  try {
+    const { email, password } = req.body;
+    const user = await Customer.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: "User not found" });
+    }
+    if (!validatePassword(password, user.password)) {
+      return res.status(400).json({ message: "Invalid password" });
+    }
+    const payload: AuthPayload = {
+      _id: user._id as string,
+      email: user.email,
+      verified: user.verified,
+    };
+    const signature = generateSignature(payload);
+    res.status(200).json({
+      data: payload,
+      signature,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error while logging in" });
+  }
+};
