@@ -7,7 +7,7 @@ import {
   validatePassword,
 } from "./utility/passwordUtility";
 import { generateOtp, onRequestOtp } from "./utility/notificationUtility";
-import { Customer } from "./models";
+import { Customer, DeliveryUser, Order, Vendor } from "./models";
 import { AuthPayload } from "./dto";
 
 export const customerSignup = async (req: Request, res: Response) => {
@@ -133,5 +133,116 @@ export const customerVerify = async (req: Request, res: Response) => {
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+export const requestOtp = async (req: Request, res: Response) => {
+  try {
+    const customer = req.user;
+
+    if (!customer) {
+      return res.status(400).json({ message: "Invalid request" });
+    }
+
+    const profile = await Customer.findById(customer._id);
+
+    if (!profile) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const { otp, expiry } = generateOtp();
+
+    profile.otp = String(otp);
+    profile.otp_expiry = expiry;
+
+    const result = await profile.save();
+
+    const sendCode = await onRequestOtp(otp, result.phone);
+
+    if (!sendCode) {
+      return res.status(400).json({ message: "Failed to send OTP" });
+    }
+
+    return res.status(200).json({ message: "OTP sent!" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal Server Error on OTP" });
+  }
+};
+
+export const getCustomerProfile = async (req: Request, res: Response) => {
+  try {
+    const customer = req.user;
+
+    const profile = await Customer.findById(customer._id);
+
+    if (!profile) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.status(200).json({ data: profile });
+  } catch (error) {
+    res.status(500).json({ message: "Error while fetching profile" });
+  }
+};
+
+export const editCustomerProfile = async (req: Request, res: Response) => {
+  try {
+    const customer = req.user;
+
+    const profile = await Customer.findById(customer._id);
+
+    if (!profile) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const { firstName, lastName, address } = req.body;
+
+    profile.firstName = firstName;
+    profile.lastName = lastName;
+    profile.address = address;
+
+    const result = await profile.save();
+
+    res.status(200).json({ data: result });
+  } catch (error) {
+    res.status(500).json({ message: "Error while editing profile" });
+  }
+};
+
+// Delivery Notification
+
+export const assignOrderForDelivery = async (
+  orderId: string,
+  vendorId: string
+) => {
+  try {
+    const vendor = await Vendor.findById(vendorId);
+
+    if (!vendor) {
+      return "No vendor found!";
+    }
+
+    const areaCode = vendor.pinCode;
+
+    const order = await Order.findById(orderId);
+
+    if (!order) return "No Order found!";
+
+    const deliveryPerson = await DeliveryUser.find({
+      pinCode: areaCode,
+      verified: true,
+      isAvailable: true,
+    });
+
+    if (!deliveryPerson) {
+      return "Delivery person not found!";
+    }
+
+    order.deliveryId = deliveryPerson[0]._id as string;
+    await order.save();
+  } catch (error) {
+    console.log(error);
+    return "Error while assigning order for delivery";
+  }
+};
+
 
 

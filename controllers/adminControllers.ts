@@ -157,4 +157,3 @@ export const getDeliveryUsers = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error while fetching delivery users" });
   }
 };
-
