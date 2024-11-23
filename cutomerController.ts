@@ -336,3 +336,21 @@ export const createOrder = async(req: Request, res: Response)=>{
 }
 
 
+
+export const getOrderById = async (req: Request, res: Response) => {
+  try {
+    const orderId = req.params.id
+
+    if(orderId){
+      const order = Order.findById(orderId).populate("items.food")
+      if(order){
+        return res.status(2000).json(order)
+      }
+    }
+
+    return res.status(400).json({message: "Order not found!"})
+  } catch (error) {
+    return res.status(500).json({message: "Server Error while getting order!"})
+  }
+}
+
