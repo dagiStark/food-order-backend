@@ -133,3 +133,28 @@ export const editDeliveryProfile = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Internal Server Error!" });
   }
 };
+
+
+
+export const updateDeliveryUserStatus = async (req: Request, res: Response) => {
+  try {
+    const deliveryUser = req.body;
+    const { lat, lng } = req.body;
+    if (deliveryUser) {
+      const profile = (await DeliveryUser.findById(
+        deliveryUser._id
+      )) as IDeliveryUser;
+      if (profile) {
+        profile.lat = lat;
+        profile.lng = lng;
+      }
+
+      profile.isAvailable = !profile.isAvailable;
+
+      const result = await profile.save();
+      res.status(200).json(result);
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error!" });
+  }
+};
