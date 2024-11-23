@@ -410,3 +410,21 @@ export const addToCart = async (req: Request, res: Response, next: NextFunction)
 
   return res.status(404).json({ msg: 'Unable to add to cart!'});
 }
+
+export const getCart = async (req: Request, res: Response, next: NextFunction) => {
+
+    
+  const customer = req.user;
+  
+  if(customer){
+      const profile = await Customer.findById(customer._id);
+
+      if(profile){
+          return res.status(200).json(profile.cart);
+      }
+  
+  }
+
+  return res.status(400).json({message: 'Cart is Empty!'})
+
+}
