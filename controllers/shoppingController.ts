@@ -89,3 +89,17 @@ export const getRestaurantById = async (req: Request, res: Response) => {
   }
 };
 
+export const getAvailableOffers = async (req: Request, res: Response) => {
+  try {
+    const pinCode = req.params.pinCode;
+
+    const offers = await Offer.find({ pinCode, isActive: true });
+
+    if (offers.length > 0) {
+      return res.status(200).json({ data: offers });
+    }
+    return res.status(400).json({ message: "No Offers are available!" });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
