@@ -5,11 +5,11 @@ import {
   hashPassword,
   generateSignature,
   validatePassword,
-} from "./utility/passwordUtility";
-import { generateOtp, onRequestOtp } from "./utility/notificationUtility";
-import { Customer, DeliveryUser, Food, Order, Vendor, Transaction, Offer } from "./models";
-import { AuthPayload, CartItem } from "./dto";
-import { ICustomer, IFood, IOffer, ITransaction } from "./types/type";
+} from "../utility/passwordUtility";
+import { generateOtp, onRequestOtp } from "../utility/notificationUtility";
+import { Customer, DeliveryUser, Food, Order, Vendor, Transaction, Offer } from "../models";
+import { AuthPayload, CartItem } from "../dto";
+import { ICustomer, IFood, IOffer, ITransaction } from "../types/type";
 
 export const customerSignup = async (req: Request, res: Response) => {
   try {
