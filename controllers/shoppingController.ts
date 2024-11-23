@@ -58,3 +58,20 @@ export const getFoodsIn30Min = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+export const searchFoods = async (req: Request, res: Response) => {
+  try {
+    const pinCode = req.params.pinCode;
+    const result = await Vendor.find({ pinCode, serviceAvailable: true })
+      .sort([["rating", "desc"]])
+      .populate("foods");
+    if (result.length > 0) {
+      let foodResult = Array();
+      result.map((vendor) => foodResult.push(...vendor.foods));
+      return res.status(200).json({ data: foodResult });
+    }
+    return res.status(400).json({ message: "No Foods are available!" });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
