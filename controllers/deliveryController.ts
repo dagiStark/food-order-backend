@@ -57,3 +57,34 @@ export const deliverySignup = async (req: Request, res: Response) => {
   }
 };
 
+export const deliveryLogin = async (req: Request, res: Response) => {
+  try {
+    const { email, password } = req.body;
+
+    const deliveryUser = await DeliveryUser.findOne({ email });
+
+    if (!deliveryUser) {
+      return res.status(400).json({ message: "Delivery user not found!" });
+    }
+
+    if (!validatePassword(password, deliveryUser.password)) {
+      return res.status(400).json({ message: "Invalid password" });
+    }
+
+    const payload: AuthPayload = {
+      _id: deliveryUser._id as any,
+      email: deliveryUser.email,
+      verified: deliveryUser.verified,
+    };
+
+    const signature = generateSignature(payload);
+
+    return res.status(200).json({
+      data: payload,
+      signature,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
