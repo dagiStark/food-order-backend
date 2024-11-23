@@ -107,3 +107,29 @@ export const getDeliveryProfile = async (req: Request, res: Response) => {
   }
 };
 
+export const editDeliveryProfile = async (req: Request, res: Response) => {
+  try {
+    const deliveryUser = req.body;
+
+    const { firstName, lastName, address, phone } = req.body;
+
+    if (deliveryUser) {
+      const profile = await DeliveryUser.findById(deliveryUser._id);
+
+      if (profile) {
+        profile.firstName = firstName;
+        profile.lastName = lastName;
+        profile.address = address;
+        profile.phone = phone;
+
+        const result = await profile.save();
+
+        res.status(200).json(result);
+      }
+    }
+
+    return res.status(400).json({ message: "no delivery user found!" });
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error!" });
+  }
+};
