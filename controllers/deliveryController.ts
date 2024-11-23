@@ -88,3 +88,22 @@ export const deliveryLogin = async (req: Request, res: Response) => {
   }
 };
 
+export const getDeliveryProfile = async (req: Request, res: Response) => {
+  try {
+    const deliveryUser = req.user;
+
+    if (deliveryUser) {
+      const profile = await DeliveryUser.findById(deliveryUser._id);
+
+      if (profile) {
+        res.status(200).json(profile);
+      } else {
+        res.status(404).json({ message: "No delivery profile found" });
+      }
+    }
+    return res.status(400).json({ message: "no delivery user found!" });
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error!" });
+  }
+};
+
