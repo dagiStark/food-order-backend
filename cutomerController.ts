@@ -260,3 +260,79 @@ const validateTransaction = async(txnId: string){
 }
 
 
+
+//Order section
+
+export const createOrder = async(req: Request, res: Response)=>{
+
+  try {
+    const customer = req.user
+    const {txnId, amount, items}= req.body
+
+    if(!customer) return res.status(400).json({message: "Invalid request!"})
+
+      const {status, currentTransaction} = await validateTransaction(txnId)
+
+    const profile = await Customer.findById(customer._id);
+
+    const orderId =  `${Math.floor(Math.random() * 89999) + 1000}`;
+
+    const cart = <[CartItem]>req.body
+
+    let cartItems = Array()
+
+    let netAmount = 0.0
+
+    let vendorId 
+
+    const foods = await Food.find().where('_id').in(cart.map(item => item._id)).exec()
+
+    foods.map(food => {
+      cart.map(({_id, unit})=> {
+        if(String(food._id) === _id){
+          vendorId = food.vendorId
+          netAmount += (food.price * unit)
+          cartItems.push({food._id, unit})
+        }
+      })
+    })
+
+    if(cartItems){
+      const currentOrder = await Order.create({
+        orderId: orderId,
+        vendorId: vendorId,
+        items: cartItems,
+        totalAmount: netAmount,
+        paidAmount: amount,
+        orderDate: new Date(),
+        orderStatus: 'Waiting',
+        remarks: '',
+        deliveryId: '',
+        readyTime: 45 
+      })
+
+      profile.cart = [] as any
+
+      profile?.orders.push(currentOrder)
+
+      currentTransaction.vendorId = vendorId
+      currentTransaction.orderId = orderId
+      currentTransaction.status = 'CONFIRMED'
+
+      await currentTransaction.save()
+
+      await assignOrderForDelivery(currentOrder._id, vendorId)
+
+      const profileResponse = await profile?.save()
+
+      return res.status(200).json(profileResponse)
+    }
+
+    return res.status(400).json({message: "Error while creating order!"})
+
+  } catch (error) {
+    return res.status(500).json({message: "Internal server Error while creating order!"})
+  }
+}
+
+
