@@ -7,8 +7,9 @@ import {
   validatePassword,
 } from "./utility/passwordUtility";
 import { generateOtp, onRequestOtp } from "./utility/notificationUtility";
-import { Customer, DeliveryUser, Order, Vendor } from "./models";
-import { AuthPayload } from "./dto";
+import { Customer, DeliveryUser, Food, Order, Vendor, Transaction } from "./models";
+import { AuthPayload, CartItem } from "./dto";
+import { IFood } from "./types/type";
 
 export const customerSignup = async (req: Request, res: Response) => {
   try {
@@ -244,5 +245,18 @@ export const assignOrderForDelivery = async (
   }
 };
 
+
+
+const validateTransaction = async(txnId: string){
+  const currentTransaction = await Transaction.findById(txnId)
+
+  if(currentTransaction){
+    if(currentTransaction.status.toLowerCase() !== 'failed'){
+      return {status: true, currentTransaction}
+    }
+  }
+
+  return {status: false, currentTransaction}
+}
 
 
