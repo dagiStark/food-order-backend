@@ -452,3 +452,24 @@ export const deleteCart = async (req: Request, res: Response, next: NextFunction
 }
 
 
+
+export const verifyOrder = async (req: Request, res: Response, next: NextFunction) => {
+
+  const offerId = req.params.id;
+  const customer = req.user;
+  
+  if(customer){
+
+      const appliedOffer = await Offer.findById(offerId);
+      
+      if(appliedOffer){
+          if(appliedOffer.isActive){
+              return res.status(200).json({ message: 'Offer is Valid', offer: appliedOffer});
+          }
+      }
+
+  }
+
+  return res.status(400).json({ msg: 'Offer is Not Valid'});
+}
+
