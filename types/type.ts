@@ -47,6 +47,7 @@ export interface IOffer extends Document {
   title: string;
   description?: string;
   minValue: number;
+  offerAmount: number;
   startValidity?: Date;
   endValidity?: Date;
   promoCode: string;

@@ -7,9 +7,9 @@ import {
   validatePassword,
 } from "./utility/passwordUtility";
 import { generateOtp, onRequestOtp } from "./utility/notificationUtility";
-import { Customer, DeliveryUser, Food, Order, Vendor, Transaction } from "./models";
+import { Customer, DeliveryUser, Food, Order, Vendor, Transaction, Offer } from "./models";
 import { AuthPayload, CartItem } from "./dto";
-import { IFood } from "./types/type";
+import { ICustomer, IFood, IOffer, ITransaction } from "./types/type";
 
 export const customerSignup = async (req: Request, res: Response) => {
   try {
@@ -248,7 +248,7 @@ export const assignOrderForDelivery = async (
 
 
 const validateTransaction = async(txnId: string){
-  const currentTransaction = await Transaction.findById(txnId)
+  const currentTransaction = await Transaction.findById(txnId) as ITransaction
 
   if(currentTransaction){
     if(currentTransaction.status.toLowerCase() !== 'failed'){
@@ -271,9 +271,9 @@ export const createOrder = async(req: Request, res: Response)=>{
 
     if(!customer) return res.status(400).json({message: "Invalid request!"})
 
-      const {status, currentTransaction} = await validateTransaction(txnId)
+      const {status, currentTransaction} = await validateTransaction(txnId) 
 
-    const profile = await Customer.findById(customer._id);
+    const profile = await Customer.findById(customer._id) as ICustomer;
 
     const orderId =  `${Math.floor(Math.random() * 89999) + 1000}`;
 
@@ -469,7 +469,6 @@ export const verifyOrder = async (req: Request, res: Response, next: NextFunctio
       }
 
   }
-
   return res.status(400).json({ msg: 'Offer is Not Valid'});
 }
 
@@ -484,7 +483,7 @@ export const createPayment = async (req: Request, res: Response, next: NextFunct
 
   if(offerId){
 
-      const appliedOffer = await Offer.findById(offerId);
+      const appliedOffer = await Offer.findById(offerId) as IOffer;
 
       if(appliedOffer.isActive){
           payableAmount = (payableAmount - appliedOffer.offerAmount);

@@ -8,6 +8,7 @@ const OfferSchema: Schema = new Schema(
     title: { type: String, required: true },
     description: { type: String },
     minValue: { type: Number, required: true },
+    offerAmount: {type: Number, required: true},
     startValidity: Date,
     endValidity: Date,
     promoCode: { type: String, required: true },
